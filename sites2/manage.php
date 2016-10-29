@@ -6,6 +6,14 @@ include "conn.php";
 
 //分页相关变量
 $pagesize = 5; //每页显示的条数
+
+if(empty($_GET["page"])){
+    $page = 1;
+    $startrow = 0;
+} else{
+    $page = (int)$_GET["page"];
+    $startrow = ($page-1) * $pagesize;
+}
 //从地址栏获取传递的page参数
 
 
@@ -14,11 +22,16 @@ $pagesize = 5; //每页显示的条数
 $sql = "SELECT * FROM 007_news";
 //执行SQL语句
 $result = mysql_query($sql);
-//记录总数和椰树
+
+//记录总数和页数
 $records = mysql_num_rows($result); //总条数
 $pages = ceil($records/$pagesize);  //总页数
 
+//构造分页语句
+$sql = "SELECT * FROM 007_news ORDER BY orderby ASC, id DESC LIMIT $startrow,$pagesize";
 
+//执行分页语句
+$result = mysql_query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -71,6 +84,17 @@ $pages = ceil($records/$pagesize);  //总页数
 
             border:1px solid #e93854;
         }
+        .pagelist{
+        	height:40px;
+        	line-height:40px;
+        }
+        .pagelist a{
+        	border:1px solid #ccc;
+        	background-color:#f0f0f0;
+        	padding:3px 10px;
+        	margin:0px 3px;
+        }
+        .pagelist span{padding:3px 10px;}
 
     </style>
 </head>
@@ -118,6 +142,24 @@ function confirmDel(id){
         <?php
            }
         ?>
+        <tr>
+            <td colspan="8" align="center" class="pagelist">
+                <?php
+                    $prev = $page - 3;
+                    $next = $page + 3;
+                    if($prev < 1){$prev = 1;}
+                    if($next > $pages){$next = $pages;}
+                    for($i = $prev; $i<$pages;$i++){
+                        //如果是当前页，则不添加连接
+                        if($i == $page){
+                            echo "<span>$i</span>";
+                        } else{
+                            echo "<a href='manage.php?page=$i'>$i</a>";
+                        }
+                    }
+                ?>
+            </td>
+        </tr>
     </table>
 </div>
 </body>
