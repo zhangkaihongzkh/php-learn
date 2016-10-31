@@ -1,6 +1,6 @@
 # php-learn
 ## sites2--新闻管理平台
-主要功能逻辑：
+主要功能逻辑：</br>
 1. 后台登陆界面:index.php</br>
 2. login_check.php登陆检查界面</br>
 3. 将用户输入信息与数据库进行比对
